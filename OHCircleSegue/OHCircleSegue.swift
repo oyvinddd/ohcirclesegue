@@ -10,7 +10,8 @@ import UIKit
 
 class OHCircleSegue: UIStoryboardSegue {
     
-    private let duration: CFTimeInterval = 0.2
+    private let expandDur: CFTimeInterval = 0.4
+    private let contractDur: CFTimeInterval = 0.2
     private static let stack = Stack()
     
     var circleOrigin: CGPoint
@@ -79,8 +80,8 @@ class OHCircleSegue: UIStoryboardSegue {
         let animation = CABasicAnimation(keyPath: "path")
         animation.toValue = destinationPath
         animation.removedOnCompletion = false
-        animation.duration = duration
         animation.fillMode = kCAFillModeBoth
+        animation.duration = shouldExpand ? expandDur : contractDur
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animation.delegate = self
         return animation
