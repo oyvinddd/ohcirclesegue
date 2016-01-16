@@ -18,8 +18,12 @@ class OHCircleSegue: UIStoryboardSegue {
     
     override init(identifier: String?, source: UIViewController, destination: UIViewController) {
         
+        let centerX = UIScreen.mainScreen().bounds.width*0.5
+        let centerY = UIScreen.mainScreen().bounds.height*0.5
+        let centerOfScreen = CGPointMake(centerX, centerY)
+        
         // Initialize properties
-        circleOrigin = destination.view.center
+        circleOrigin = centerOfScreen
         shouldExpand = true
         
         super.init(identifier: identifier, source: source, destination: destination)
@@ -29,7 +33,6 @@ class OHCircleSegue: UIStoryboardSegue {
         
         if OHCircleSegue.stack.peek() !== destinationViewController {
             OHCircleSegue.stack.push(sourceViewController)
-            shouldExpand = true
         } else {
             OHCircleSegue.stack.pop()
             shouldExpand = false
