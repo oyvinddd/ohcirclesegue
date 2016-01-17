@@ -10,12 +10,12 @@ import UIKit
 
 class OHCircleSegue: UIStoryboardSegue {
     
-    private let expandDur: CFTimeInterval = 0.4
-    private let contractDur: CFTimeInterval = 0.2
+    private let expandDur: CFTimeInterval = 0.35
+    private let contractDur: CFTimeInterval = 0.15
     private static let stack = Stack()
     
     var circleOrigin: CGPoint
-    private var shouldExpand: Bool
+    private var shouldUnwind: Bool
     
     override init(identifier: String?, source: UIViewController, destination: UIViewController) {
         
@@ -25,7 +25,7 @@ class OHCircleSegue: UIStoryboardSegue {
         
         // Initialize properties
         circleOrigin = centerOfScreen
-        shouldExpand = true
+        shouldUnwind = false
         
         super.init(identifier: identifier, source: source, destination: destination)
     }
@@ -36,37 +36,38 @@ class OHCircleSegue: UIStoryboardSegue {
             OHCircleSegue.stack.push(sourceViewController)
         } else {
             OHCircleSegue.stack.pop()
-            shouldExpand = false
+            shouldUnwind = true
         }
-        
-        let paths = startAndEndPaths(shouldExpand)
         
         let sourceView = sourceViewController.view as UIView!
         let destView = destinationViewController.view as UIView!
         
-        // Add destination controllers view to the main application window
+        // Add source (or destination) controller's view to the main application 
+        // window depending of if this is a normal or unwind segue
         let window = UIApplication.sharedApplication().keyWindow
-        if shouldExpand {
+        if shouldUnwind {
             window?.insertSubview(destView, aboveSubview: sourceView)
         } else {
             window?.insertSubview(destView, atIndex:0)
         }
+        
+        let paths = startAndEndPaths(shouldUnwind)
         
         // Create circle mask and apply it to the view of the destination controller
         let mask = CAShapeLayer()
         mask.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         mask.position = circleOrigin
         mask.path = paths.start
-        (shouldExpand ? destView : sourceView).layer.mask = mask
+        (shouldUnwind ? destView : sourceView).layer.mask = mask
         
         // Call method for creating animation and add it to the view's mask
-        (shouldExpand ? destView : sourceView).layer.mask?.addAnimation(scalingAnimation(paths.end), forKey: nil)
+        (shouldUnwind ? destView : sourceView).layer.mask?.addAnimation(scalingAnimation(paths.end), forKey: nil)
     }
     
     // MARK: Animation delegate
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        if shouldExpand {
+        if shouldUnwind {
             sourceViewController.presentViewController(destinationViewController, animated: false, completion: nil)
         } else {
             sourceViewController.dismissViewControllerAnimated(false, completion: nil)
@@ -81,13 +82,13 @@ class OHCircleSegue: UIStoryboardSegue {
         animation.toValue = destinationPath
         animation.removedOnCompletion = false
         animation.fillMode = kCAFillModeBoth
-        animation.duration = shouldExpand ? expandDur : contractDur
+        animation.duration = shouldUnwind ? expandDur : contractDur
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animation.delegate = self
         return animation
     }
     
-    private func startAndEndPaths(shouldExpand: Bool) -> (start: CGPathRef, end: CGPathRef) {
+    private func startAndEndPaths(shouldUnwind: Bool) -> (start: CGPathRef, end: CGPathRef) {
         
         // The hypothenuse is the diaonal of the screen
         // The diagonal of the screen is the diameter we
@@ -108,7 +109,7 @@ class OHCircleSegue: UIStoryboardSegue {
         let path1 = UIBezierPath(ovalInRect: CGRectZero).CGPath
         let path2 = UIBezierPath(ovalInRect: CGRectMake(-dia/2, -dia/2, dia, dia)).CGPath
         
-        return shouldExpand ? (path1, path2) : (path2, path1)
+        return shouldUnwind ? (path1, path2) : (path2, path1)
     }
     
     // MARK: Simple stack implementation for keeping track of view controllers
@@ -129,9 +130,8 @@ class OHCircleSegue: UIStoryboardSegue {
                 stackArray.removeLast()
                 N--
                 return vc!
-            } else {
-                return nil
             }
+            return nil
         }
         
         func peek() -> UIViewController? {
