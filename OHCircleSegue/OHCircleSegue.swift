@@ -45,7 +45,7 @@ class OHCircleSegue: UIStoryboardSegue {
         // Add source (or destination) controller's view to the main application 
         // window depending of if this is a normal or unwind segue
         let window = UIApplication.sharedApplication().keyWindow
-        if shouldUnwind {
+        if !shouldUnwind {
             window?.insertSubview(destView, aboveSubview: sourceView)
         } else {
             window?.insertSubview(destView, atIndex:0)
@@ -58,16 +58,16 @@ class OHCircleSegue: UIStoryboardSegue {
         mask.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         mask.position = circleOrigin
         mask.path = paths.start
-        (shouldUnwind ? destView : sourceView).layer.mask = mask
+        (shouldUnwind ? sourceView : destView).layer.mask = mask
         
         // Call method for creating animation and add it to the view's mask
-        (shouldUnwind ? destView : sourceView).layer.mask?.addAnimation(scalingAnimation(paths.end), forKey: nil)
+        (shouldUnwind ? sourceView : destView).layer.mask?.addAnimation(scalingAnimation(paths.end), forKey: nil)
     }
     
     // MARK: Animation delegate
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        if shouldUnwind {
+        if !shouldUnwind {
             sourceViewController.presentViewController(destinationViewController, animated: false, completion: nil)
         } else {
             sourceViewController.dismissViewControllerAnimated(false, completion: nil)
@@ -82,7 +82,7 @@ class OHCircleSegue: UIStoryboardSegue {
         animation.toValue = destinationPath
         animation.removedOnCompletion = false
         animation.fillMode = kCAFillModeBoth
-        animation.duration = shouldUnwind ? expandDur : contractDur
+        animation.duration = shouldUnwind ? contractDur : expandDur
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animation.delegate = self
         return animation
