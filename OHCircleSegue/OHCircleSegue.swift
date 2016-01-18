@@ -51,7 +51,7 @@ class OHCircleSegue: UIStoryboardSegue {
             window?.insertSubview(destView, atIndex:0)
         }
         
-        let paths = startAndEndPaths(shouldUnwind)
+        let paths = startAndEndPaths(!shouldUnwind)
         
         // Create circle mask and apply it to the view of the destination controller
         let mask = CAShapeLayer()
