@@ -15,3 +15,7 @@ Coming soon
 ## Usage
 
 Coming soon
+
+## License
+
+OHCircleSegue is available under the MIT license. See the LICENSE.md file for more info.
