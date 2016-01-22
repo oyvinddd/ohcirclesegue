@@ -14,7 +14,10 @@ Coming soon
 
 ## Usage
 
-Coming soon
+- 1. In your storyboard, create a segue between two view controllers
+- 2. Go to the attributes inspector for the newly created segue and set it up like shown below
+
+![Usage 1](/Resources/usage_1.png)
 
 ## License
 
