@@ -1,9 +1,10 @@
 # Ignore everything
-*
+#*
 
 # But not these files
-!.gitignore
-!OHCircleSegue/OHCircleSegue.swift
+#!.gitignore
+#!OHCircleSegue/OHCircleSegue.swift
+#!Resources
 
 # Even if they are in subdirs
 #!*/
