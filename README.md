@@ -19,6 +19,18 @@ Coming soon
 
 ![Usage 1](/Resources/usage_1.png)
 
+- 3. Repeat step 1 and 2 for the unwind segue
+
+To determine where on the screen animation should originat from, override the prepareForSegue function:
+
+```
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        let touch = sender as! UITouch
+        (segue as! OHCircleSegue).circleOrigin = touch.locationInView(view)
+    }
+```
+
 ## License
 
 OHCircleSegue is available under the MIT license. See the LICENSE.md file for more info.
