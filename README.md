@@ -21,14 +21,17 @@ Coming soon
 
 - 3. Repeat step 1 and 2 for the unwind segue
 
-To determine where on the screen animation should originat from, override the prepareForSegue function:
+To determine where on the screen animation should originate from, override the prepareForSegue function:
 
 ```
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        let touch = sender as! UITouch
-        (segue as! OHCircleSegue).circleOrigin = touch.locationInView(view)
-    }
+override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    
+    // sender object is an instance of UITouch in this case 
+    let touch = sender as! UITouch
+    
+    // Access the circleOrigin property and assign preferred CGPoint
+    (segue as! OHCircleSegue).circleOrigin = touch.locationInView(view)
+}
 ```
 
 ## License
