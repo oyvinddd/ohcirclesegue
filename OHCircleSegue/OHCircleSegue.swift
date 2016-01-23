@@ -10,9 +10,10 @@ import UIKit
 
 class OHCircleSegue: UIStoryboardSegue {
     
-    private let expandDur: CFTimeInterval = 0.35
-    private let contractDur: CFTimeInterval = 0.15
+    private static let expandDur: CFTimeInterval = 0.35
+    private static let contractDur: CFTimeInterval = 0.15
     private static let stack = Stack()
+    private static var isAnimating = false
     
     var circleOrigin: CGPoint
     private var shouldUnwind: Bool
@@ -31,6 +32,10 @@ class OHCircleSegue: UIStoryboardSegue {
     }
     
     override func perform() {
+        
+        if OHCircleSegue.isAnimating {
+            return
+        }
         
         if OHCircleSegue.stack.peek() !== destinationViewController {
             OHCircleSegue.stack.push(sourceViewController)
@@ -66,7 +71,12 @@ class OHCircleSegue: UIStoryboardSegue {
     
     // MARK: Animation delegate
     
+    override func animationDidStart(anim: CAAnimation) {
+        OHCircleSegue.isAnimating = true
+    }
+    
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+        OHCircleSegue.isAnimating = false
         if !shouldUnwind {
             sourceViewController.presentViewController(destinationViewController, animated: false, completion: nil)
         } else {
@@ -82,7 +92,7 @@ class OHCircleSegue: UIStoryboardSegue {
         animation.toValue = destinationPath
         animation.removedOnCompletion = false
         animation.fillMode = kCAFillModeBoth
-        animation.duration = shouldUnwind ? contractDur : expandDur
+        animation.duration = shouldUnwind ? OHCircleSegue.contractDur : OHCircleSegue.expandDur
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animation.delegate = self
         return animation
@@ -103,7 +113,7 @@ class OHCircleSegue: UIStoryboardSegue {
         
         // TODO: Clean up implementation ^
         
-        print("h1: \(h1) hyp: \(hyp) rw: \(rw) rh: \(rh) width: \(width) height: \(height)")
+        //print("h1: \(h1) hyp: \(hyp) rw: \(rw) rh: \(rh) width: \(width) height: \(height)")
         
         // The two circle sizes we will animate to/from
         let path1 = UIBezierPath(ovalInRect: CGRectZero).CGPath
