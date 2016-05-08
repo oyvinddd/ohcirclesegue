@@ -47,7 +47,7 @@ class OHCircleSegue: UIStoryboardSegue {
         let sourceView = sourceViewController.view as UIView!
         let destView = destinationViewController.view as UIView!
         
-        // Add source (or destination) controller's view to the main application 
+        // Add source (or destination) controller's view to the main application
         // window depending of if this is a normal or unwind segue
         let window = UIApplication.sharedApplication().keyWindow
         if !shouldUnwind {
@@ -126,33 +126,27 @@ class OHCircleSegue: UIStoryboardSegue {
     
     private class Stack {
         
-        private var N = 0
         private var stackArray = Array<UIViewController>()
+        private var size: Int {
+            get {
+                return stackArray.count
+            }
+        }
         
         func push(vc: UIViewController) {
             stackArray.append(vc)
-            N++
         }
         
         func pop() -> UIViewController? {
-            if stackArray.last != nil {
-                let vc = stackArray.last
+            if let last = stackArray.last {
                 stackArray.removeLast()
-                N--
-                return vc!
+                return last
             }
             return nil
         }
         
         func peek() -> UIViewController? {
-            if stackArray.last != nil {
-                return stackArray.last
-            }
-            return nil
-        }
-        
-        func size() -> Int {
-            return N
+            return stackArray.last
         }
     }
 }
