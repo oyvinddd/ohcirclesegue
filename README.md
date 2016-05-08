@@ -23,7 +23,7 @@ Coming soon
 
 To determine where on the screen animation should originate from, override the prepareForSegue function:
 
-```
+```swift
 override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     
     // sender object is an instance of UITouch in this case 
