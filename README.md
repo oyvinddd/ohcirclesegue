@@ -10,7 +10,7 @@ Drag the OHCircleSegue.swift class into you project and you're done.
 
 ### CocoaPods
 
-Coming soon
+Unlikely
 
 ## Usage
 
