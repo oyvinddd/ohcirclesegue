@@ -42,12 +42,9 @@ Starting the transition from a UIButton (note that this will aslo work for other
 
     ```swift
     @IBAction func buttonTapped(sender: AnyObject) {
-        
-        // We can force unwrap here since we are certain sender is a UIButton
-        let button = sender as! UIButton
-        
+    
         // Call method to perform our OHCircleSegue, using our button as the sender
-        performSegueWithIdentifier("Segue", sender: button)
+        performSegueWithIdentifier("Segue", sender: sender)
     }
     ```
     
@@ -56,7 +53,7 @@ Starting the transition from a UIButton (note that this will aslo work for other
     ```swift
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        // No problem to force unwrap in this case
+        // No problem to force unwrap in this case, since we know sender is an instance of UIButton
         let button = sender as! UIButton
         
         // Set the circleOrigin property of the segue to the center of the button
