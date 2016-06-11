@@ -21,18 +21,48 @@ Unlikely
 
 - 3. Repeat step 1 and 2 for the unwind segue
 
-To determine where on the screen animation should originate from, override the prepareForSegue function:
+In this example, the performSegueWithIdentifier method is called from touchesBegan. To determine where on the screen animation should originate from, override the prepareForSegue function:
 
-```swift
-override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    ```swift
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        // sender object is an instance of UITouch in this case 
+        let touch = sender as! UITouch
+        
+        // Access the circleOrigin property and assign preferred CGPoint
+        (segue as! OHCircleSegue).circleOrigin = touch.locationInView(view)
+    }
+    ```
+
+### UIButton example
+
+Starting the transition from a UIButton (note that this will aslo work for other UIKit components as long as user interactions are enabled).
+
+1. Add a button the view controller you want to transition from and hook it up with an IBAction like shown below
+
+    ```swift
+    @IBAction func buttonTapped(sender: AnyObject) {
+        
+        // We can force unwrap here since we are certain sender is a UIButton
+        let button = sender as! UIButton
+        
+        // Call method to perform our OHCircleSegue, using our button as the sender
+        performSegueWithIdentifier("Segue", sender: button)
+    }
+    ```
     
-    // sender object is an instance of UITouch in this case 
-    let touch = sender as! UITouch
+2. In the prepareForSegue method, unwrap the button and use it to determine the origin of our transition
     
-    // Access the circleOrigin property and assign preferred CGPoint
-    (segue as! OHCircleSegue).circleOrigin = touch.locationInView(view)
-}
-```
+    ```swift
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        // No problem to force unwrap in this case
+        let button = sender as! UIButton
+        
+        // Set the circleOrigin property of the segue to the center of the button
+        (segue as! OHCircleSegue).circleOrigin = button.center
+    }
+    ```
 
 ## License
 
