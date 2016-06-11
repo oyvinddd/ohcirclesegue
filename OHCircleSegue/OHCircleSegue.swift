@@ -10,8 +10,8 @@ import UIKit
 
 class OHCircleSegue: UIStoryboardSegue {
     
-    private static let expandDur: CFTimeInterval = 0.35
-    private static let contractDur: CFTimeInterval = 0.15
+    private static let expandDur: CFTimeInterval = 0.35 // Change to make transition faster/slower
+    private static let contractDur: CFTimeInterval = 0.15 // Change to make transition faster/slower
     private static let stack = Stack()
     private static var isAnimating = false
     
@@ -20,6 +20,8 @@ class OHCircleSegue: UIStoryboardSegue {
     
     override init(identifier: String?, source: UIViewController, destination: UIViewController) {
         
+        // By default, transition starts from the center of the screen,
+        // so let's find the center when segue is first initialized
         let centerX = UIScreen.mainScreen().bounds.width*0.5
         let centerY = UIScreen.mainScreen().bounds.height*0.5
         let centerOfScreen = CGPointMake(centerX, centerY)
@@ -100,9 +102,10 @@ class OHCircleSegue: UIStoryboardSegue {
     
     private func startAndEndPaths(shouldUnwind: Bool) -> (start: CGPathRef, end: CGPathRef) {
         
-        // The hypothenuse is the diaonal of the screen
-        // The diagonal of the screen is the diameter we
-        // need the big circle to be to cover the whole screen
+        // The hypothenuse is the diagonal of the screen.
+        // Further, we use this diagonal as the diameter of the big circle.
+        // This way we are always certain that the big circle will cover the whole screen.
+        // TODO: Clean up below implementation
         let width = UIScreen.mainScreen().bounds.size.width
         let height = UIScreen.mainScreen().bounds.size.height
         let rw = width + fabs(width/2 - circleOrigin.x)
@@ -111,19 +114,19 @@ class OHCircleSegue: UIStoryboardSegue {
         let hyp = CGFloat(sqrtf(powf(Float(rw), 2) + powf(Float(rh), 2)))
         let dia = h1 + hyp
         
-        // TODO: Clean up implementation ^
-        
         //print("h1: \(h1) hyp: \(hyp) rw: \(rw) rh: \(rh) width: \(width) height: \(height)")
         
         // The two circle sizes we will animate to/from
         let path1 = UIBezierPath(ovalInRect: CGRectZero).CGPath
         let path2 = UIBezierPath(ovalInRect: CGRectMake(-dia/2, -dia/2, dia, dia)).CGPath
         
+        // If shouldUnwind flag is true, we should go from big to small circle, or else go from small to big
         return shouldUnwind ? (path1, path2) : (path2, path1)
     }
     
-    // MARK: Simple stack implementation for keeping track of view controllers
+    // MARK: Stack implementation
     
+    // Simple stack implementation for keeping track of our view controllers
     private class Stack {
         
         private var stackArray = Array<UIViewController>()
