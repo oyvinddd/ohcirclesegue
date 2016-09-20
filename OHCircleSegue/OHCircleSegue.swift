@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OHCircleSegue: UIStoryboardSegue {
+class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
     
     private static let expandDur: CFTimeInterval = 0.35 // Change to make transition faster/slower
     private static let contractDur: CFTimeInterval = 0.15 // Change to make transition faster/slower
@@ -73,11 +73,11 @@ class OHCircleSegue: UIStoryboardSegue {
     
     // MARK: Animation delegate
     
-    override func animationDidStart(anim: CAAnimation) {
+    func animationDidStart(anim: CAAnimation) {
         OHCircleSegue.isAnimating = true
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         OHCircleSegue.isAnimating = false
         if !shouldUnwind {
             sourceViewController.presentViewController(destinationViewController, animated: false, completion: nil)
