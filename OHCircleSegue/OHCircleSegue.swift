@@ -1,6 +1,6 @@
 //
-//  OHOHCircleSegue.swift
-//  OHOHCircleSegue
+//  OHCircleSegue.swift
+//  OHCircleSegue
 //
 //  Created by Øyvind Hauge on 10/01/16.
 //  Copyright © 2016 Øyvind Hauge. All rights reserved.
