@@ -22,9 +22,9 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
         
         // By default, transition starts from the center of the screen,
         // so let's find the center when segue is first initialized
-        let centerX = UIScreen.mainScreen().bounds.width*0.5
-        let centerY = UIScreen.mainScreen().bounds.height*0.5
-        let centerOfScreen = CGPointMake(centerX, centerY)
+        let centerX = UIScreen.main.bounds.width*0.5
+        let centerY = UIScreen.main.bounds.height*0.5
+        let centerOfScreen = CGPoint(x:centerX, y:centerY)
         
         // Initialize properties
         circleOrigin = centerOfScreen
@@ -39,60 +39,60 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
             return
         }
         
-        if OHCircleSegue.stack.peek() !== destinationViewController {
-            OHCircleSegue.stack.push(sourceViewController)
+        if OHCircleSegue.stack.peek() !== destination {
+            OHCircleSegue.stack.push(vc: source)
         } else {
             OHCircleSegue.stack.pop()
             shouldUnwind = true
         }
         
-        let sourceView = sourceViewController.view as UIView!
-        let destView = destinationViewController.view as UIView!
+        let sourceView = source.view as UIView!
+        let destView = destination.view as UIView!
         
         // Add source (or destination) controller's view to the main application
         // window depending of if this is a normal or unwind segue
-        let window = UIApplication.sharedApplication().keyWindow
+        let window = UIApplication.shared.keyWindow
         if !shouldUnwind {
-            window?.insertSubview(destView, aboveSubview: sourceView)
+            window?.insertSubview(destView!, aboveSubview: sourceView!)
         } else {
-            window?.insertSubview(destView, atIndex:0)
+            window?.insertSubview(destView!, at:0)
         }
         
-        let paths = startAndEndPaths(!shouldUnwind)
+        let paths = startAndEndPaths(shouldUnwind: !shouldUnwind)
         
         // Create circle mask and apply it to the view of the destination controller
         let mask = CAShapeLayer()
         mask.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         mask.position = circleOrigin
         mask.path = paths.start
-        (shouldUnwind ? sourceView : destView).layer.mask = mask
+        (shouldUnwind ? sourceView : destView)?.layer.mask = mask
         
         // Call method for creating animation and add it to the view's mask
-        (shouldUnwind ? sourceView : destView).layer.mask?.addAnimation(scalingAnimation(paths.end), forKey: nil)
+        (shouldUnwind ? sourceView : destView)?.layer.mask?.add(scalingAnimation(destinationPath: paths.end), forKey: nil)
     }
     
     // MARK: Animation delegate
     
-    func animationDidStart(anim: CAAnimation) {
+    private func animationDidStart(anim: CAAnimation) {
         OHCircleSegue.isAnimating = true
     }
     
-    func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    private func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         OHCircleSegue.isAnimating = false
         if !shouldUnwind {
-            sourceViewController.presentViewController(destinationViewController, animated: false, completion: nil)
+            source.present(destination, animated: false, completion: nil)
         } else {
-            sourceViewController.dismissViewControllerAnimated(false, completion: nil)
+            source.dismiss(animated: false, completion: nil)
         }
     }
     
     // MARK: Helper methods
     
-    private func scalingAnimation(destinationPath: CGPathRef) -> CABasicAnimation {
+    private func scalingAnimation(destinationPath: CGPath) -> CABasicAnimation {
         
         let animation = CABasicAnimation(keyPath: "path")
         animation.toValue = destinationPath
-        animation.removedOnCompletion = false
+        animation.isRemovedOnCompletion = false
         animation.fillMode = kCAFillModeBoth
         animation.duration = shouldUnwind ? OHCircleSegue.contractDur : OHCircleSegue.expandDur
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -100,25 +100,23 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
         return animation
     }
     
-    private func startAndEndPaths(shouldUnwind: Bool) -> (start: CGPathRef, end: CGPathRef) {
+    private func startAndEndPaths(shouldUnwind: Bool) -> (start: CGPath, end: CGPath) {
         
         // The hypothenuse is the diagonal of the screen.
         // Further, we use this diagonal as the diameter of the big circle.
         // This way we are always certain that the big circle will cover the whole screen.
         // TODO: Clean up below implementation
-        let width = UIScreen.mainScreen().bounds.size.width
-        let height = UIScreen.mainScreen().bounds.size.height
+        let width = UIScreen.main.bounds.size.width
+        let height = UIScreen.main.bounds.size.height
         let rw = width + fabs(width/2 - circleOrigin.x)
         let rh = height + fabs(height/2 - circleOrigin.y)
         let h1 = hypot(width/2 - circleOrigin.x, height/2 - circleOrigin.y)
         let hyp = CGFloat(sqrtf(powf(Float(rw), 2) + powf(Float(rh), 2)))
         let dia = h1 + hyp
         
-        //print("h1: \(h1) hyp: \(hyp) rw: \(rw) rh: \(rh) width: \(width) height: \(height)")
-        
         // The two circle sizes we will animate to/from
-        let path1 = UIBezierPath(ovalInRect: CGRectZero).CGPath
-        let path2 = UIBezierPath(ovalInRect: CGRectMake(-dia/2, -dia/2, dia, dia)).CGPath
+        let path1 = UIBezierPath(ovalIn: CGRect.zero).cgPath
+        let path2 = UIBezierPath(ovalIn: CGRect(x:-dia/2, y:-dia/2, width:dia, height:dia)).cgPath
         
         // If shouldUnwind flag is true, we should go from big to small circle, or else go from small to big
         return shouldUnwind ? (path1, path2) : (path2, path1)
