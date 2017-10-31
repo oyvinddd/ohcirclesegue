@@ -102,10 +102,9 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
     
     private func startAndEndPaths(shouldUnwind: Bool) -> (start: CGPath, end: CGPath) {
         
-        // The hypothenuse is the diagonal of the screen.
-        // Further, we use this diagonal as the diameter of the big circle.
-        // This way we are always certain that the big circle will cover the whole screen.
-        // TODO: Clean up below implementation
+        // The hypothenuse is the diagonal of the screen. Further, we use this diagonal as 
+        // the diameter of the big circle. This way we are always certain that the big circle 
+        // will cover the whole screen.
         let width = UIScreen.main.bounds.size.width
         let height = UIScreen.main.bounds.size.height
         let rw = width + fabs(width/2 - circleOrigin.x)
