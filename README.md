@@ -8,10 +8,6 @@ Custom UIStoryBoardSegue with circular transition/animation
 ### Manual
 Drag the OHCircleSegue.swift class into you project and you're done.
 
-### CocoaPods
-
-Unlikely
-
 ## Usage
 
 - 1. In your storyboard, create a segue between two view controllers
