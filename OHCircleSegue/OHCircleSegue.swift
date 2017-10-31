@@ -73,11 +73,11 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
     
     // MARK: Animation delegate
     
-    private func animationDidStart(anim: CAAnimation) {
+    func animationDidStart(_ anim: CAAnimation) {
         OHCircleSegue.isAnimating = true
     }
     
-    private func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool)  {
         OHCircleSegue.isAnimating = false
         if !shouldUnwind {
             source.present(destination, animated: false, completion: nil)
