@@ -46,8 +46,8 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
             shouldUnwind = true
         }
         
-        let sourceView = source.view as UIView!
-        let destView = destination.view as UIView!
+        let sourceView = source.view as UIView?
+        let destView = destination.view as UIView?
         
         // Add source (or destination) controller's view to the main application
         // window depending of if this is a normal or unwind segue
@@ -93,9 +93,9 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
         let animation = CABasicAnimation(keyPath: "path")
         animation.toValue = destinationPath
         animation.isRemovedOnCompletion = false
-        animation.fillMode = kCAFillModeBoth
+        animation.fillMode = CAMediaTimingFillMode.both
         animation.duration = shouldUnwind ? OHCircleSegue.contractDur : OHCircleSegue.expandDur
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         animation.delegate = self
         return animation
     }
@@ -107,8 +107,8 @@ class OHCircleSegue: UIStoryboardSegue, CAAnimationDelegate {
         // will cover the whole screen.
         let width = UIScreen.main.bounds.size.width
         let height = UIScreen.main.bounds.size.height
-        let rw = width + fabs(width/2 - circleOrigin.x)
-        let rh = height + fabs(height/2 - circleOrigin.y)
+        let rw = width + abs(width/2 - circleOrigin.x)
+        let rh = height + abs(height/2 - circleOrigin.y)
         let h1 = hypot(width/2 - circleOrigin.x, height/2 - circleOrigin.y)
         let hyp = CGFloat(sqrtf(powf(Float(rw), 2) + powf(Float(rh), 2)))
         let dia = h1 + hyp
